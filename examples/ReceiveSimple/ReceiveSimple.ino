@@ -11,8 +11,8 @@ void setup() {
 }
 
 void loop() {
-  char buffer[256];
-  int length;
+  char buffer[256] = {'\0'};
+  uint8_t length;
 
   CanSatKitRadio.receive(buffer, length);
 

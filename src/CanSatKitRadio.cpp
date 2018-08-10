@@ -497,6 +497,10 @@ std::uint8_t CanSatKitRadio_::available() {
   return frames_in_rx_fifo;
 }
 
+void CanSatKitRadio_::receive(char* data, uint8_t& length) {
+  receive((uint8_t*)data, length);
+}
+
 void CanSatKitRadio_::receive(uint8_t* data, uint8_t& length) {
   while (fifo_rx.size() == 0);
   
