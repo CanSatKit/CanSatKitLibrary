@@ -1,42 +1,40 @@
 #include <CanSatKitBMP280.h>
 #define P0 1013.25
 BMP280 bmp;
-void setup()
-{
+
+void setup() {
   SerialUSB.begin(9600);
-  if(!bmp.begin()){
-    Serial.println("BMP init failed!");
+  if(!bmp.begin()) {
+    SerialUSB.println("BMP init failed!");
     while(1);
+  } else {
+    SerialUSB.println("BMP init success!");
   }
-  else Serial.println("BMP init success!");
   
   bmp.setOversampling(4);
   
 }
-void loop()
-{
+
+void loop() {
   double T,P;
   char result = bmp.startMeasurment();
  
-  if(result!=0){
+  if(result != 0) {
     delay(result);
     result = bmp.getTemperatureAndPressure(T,P);
     
-      if(result!=0)
-      {
+      if(result != 0) {
         double A = bmp.altitude(P,P0);
         
-        Serial.print("T = \t");Serial.print(T,2); Serial.print(" degC\t");
-        Serial.print("P = \t");Serial.print(P,2); Serial.print(" mBar\t");
-        Serial.print("A = \t");Serial.print(A,2); Serial.println(" m");
+        SerialUSB.print("T = \t"); SerialUSB.print(T,2); SerialUSB.print(" degC\t");
+        SerialUSB.print("P = \t"); SerialUSB.print(P,2); SerialUSB.print(" mBar\t");
+        SerialUSB.print("A = \t"); SerialUSB.print(A,2); SerialUSB.println(" m");
        
+      } else {
+        SerialUSB.println("Error.");
       }
-      else {
-        Serial.println("Error.");
-      }
-  }
-  else {
-    Serial.println("Error.");
+  } else {
+    SerialUSB.println("Error.");
   }
   
   delay(100);
