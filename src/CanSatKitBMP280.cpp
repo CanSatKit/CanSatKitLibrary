@@ -407,26 +407,6 @@ char BMP280::calcPressure(double &P,double uP)
 	return (1);
 }
 
-
-
-
-double BMP280::sealevel(double P, double A)
-// Given a pressure P (mb) taken at a specific altitude (meters),
-// return the equivalent pressure (mb) at sea level.
-// This produces pressure readings that can be used for weather measurements.
-{
-	return(P/pow(1-(A/44330.0),5.255));
-}
-
-
-double BMP280::altitude(double P, double P0)
-// Given a pressure measurement P (mb) and the pressure at a baseline P0 (mb),
-// return altitude (meters) above baseline.
-{
-	return(44330.0*(1-pow(P/P0,1/5.255)));
-}
-
-
 char BMP280::getError(void)
 	// If any library command fails, you can retrieve an extended
 	// error code using this command. Errors are from the wire library: 

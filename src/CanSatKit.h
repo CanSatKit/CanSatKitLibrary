@@ -2,6 +2,7 @@
 #define CANSATKITLIBRARY_CANSATKIT_H_
 
 #include "CanSatKitRadio.h"
+#include "CanSatKitBMP280.h"
 
 constexpr int CanSatPins_Radio_CS = 10;
 constexpr int CanSatPins_Radio_DIO0 = 12;

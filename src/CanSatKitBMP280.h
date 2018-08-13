@@ -49,18 +49,6 @@ class BMP280
 			
 		char calcPressure(double &P, double uP);
 			//calculation for measuring pressure.
-			
-		double sealevel(double P, double A);
-			// convert absolute pressure to sea-level pressure 
-			// P: absolute pressure (mbar)
-			// A: current altitude (meters)
-			// returns sealevel pressure in mbar
-
-		double altitude(double P, double P0);
-			// convert absolute pressure to altitude (given baseline pressure; sea-level, runway, etc.)
-			// P: absolute pressure (mbar)
-			// P0: fixed baseline pressure (mbar)
-			// returns signed altitude in meters
 
 		char getError(void);
 			// If any library command fails, you can retrieve an extended
