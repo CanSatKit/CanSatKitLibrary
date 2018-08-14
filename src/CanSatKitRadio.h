@@ -76,4 +76,24 @@ constexpr static auto CodingRate_4_6 = CanSatKitRadio_::CodingRate::_4_6;
 constexpr static auto CodingRate_4_7 = CanSatKitRadio_::CodingRate::_4_7;
 constexpr static auto CodingRate_4_8 = CanSatKitRadio_::CodingRate::_4_8;
 
+
+class CanSatKitRadioFrame : public Print {
+ public:
+  int size;
+  char buffer[256];
+
+  CanSatKitRadioFrame() : size(0) {}
+
+  virtual size_t write(uint8_t x) {
+    buffer[size++] = x;
+    return 1;
+  }
+
+  void send() {
+    CanSatKitRadio.transmit(buffer, size);
+    size = 0;
+  }
+};
+
+
 #endif  // CANSATKITLIBRARY_CANSATKITRADIO_H_
