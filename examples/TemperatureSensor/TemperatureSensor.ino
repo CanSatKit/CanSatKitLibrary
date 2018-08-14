@@ -17,7 +17,9 @@ void loop() {
   int raw = analogRead(lm35_pin);
   float temperature = lm35_raw_to_temperature(raw);
 
-  SerialUSB.println(temperature);
+  SerialUSB.print("Temperature = ");
+  SerialUSB.print(temperature);
+  SerialUSB.println(" deg C");
 
   delay(50);
 }
