@@ -1,19 +1,3 @@
-/*
-	BMP280.h
-	Bosch BMP280 pressure sensor library for the Arduino microcontroller.
-	This library uses I2C connection.
-
-	Uses floating-point equations from BMP280 datasheet.
-
-	modified by mhafuzul islam
-
-	version 1.01		 16/9/2014 initial version
-	
-	Our example code uses the "pizza-eating" license. You can do anything
-	you like with this code. No really, anything. If you find it useful,
-	buy me italian pizza someday.
-*/
-
 #ifndef BMP280_h
 #define BMP280_h
 
