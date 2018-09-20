@@ -1,6 +1,8 @@
 #include <CanSatKit.h>
 
 void setup() {
+  // Remember to set the same radio parameters in
+  // transmitter and receiver boards!
   CanSatKitRadio.begin(CanSatPins_Radio_CS,
                        CanSatPins_Radio_DIO0,
                        433.0,
