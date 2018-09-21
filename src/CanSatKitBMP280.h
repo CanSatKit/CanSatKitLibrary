@@ -45,6 +45,8 @@ class BMP280
 			
 		char getTemperatureAndPressure(double& T, double& P);
 
+		char measureTemperatureAndPressure(double& T, double& P);
+
 	private:
 	
 		char readCalibration();
