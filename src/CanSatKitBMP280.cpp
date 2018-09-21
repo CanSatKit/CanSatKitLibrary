@@ -272,7 +272,7 @@ char BMP280::getUnPT(double &uP, double &uT)
 ** @param : T = stores the temperature value in degC.
 ** @param : P = stores the pressure value in mBar.
 */
-char BMP280::getTemperatureAndPressure(double &T, double &P)
+char BMP280::readTemperatureAndPressure(double &T, double &P)
 {
 	double uT ;
 	double uP;
@@ -303,7 +303,7 @@ char BMP280::measureTemperatureAndPressure(double &T, double &P)
 {
 	int time_to_wait = BMP280::startMeasurment();
 	delay(time_to_wait);
-	return BMP280::getTemperatureAndPressure(T, P);
+	return BMP280::readTemperatureAndPressure(T, P);
 }
 
 /*

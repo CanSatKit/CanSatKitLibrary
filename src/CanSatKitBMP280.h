@@ -43,7 +43,7 @@ class BMP280
 			// 3 = Received NACK on transmit of data
 			// 4 = Other error
 			
-		char getTemperatureAndPressure(double& T, double& P);
+		char readTemperatureAndPressure(double& T, double& P);
 
 		char measureTemperatureAndPressure(double& T, double& P);
 
