@@ -36,16 +36,8 @@ void loop() {
   // declare variables for temperature (T) and pressure (P) readings
   double T, P;
 
-  // start measurement - the function returns time that is neccessary to wait for result (ms)
-  // if communication with sensor fails the function returns 0, so the program is not interrupted
-  // (stopped) by broken device
-  int result = bmp.startMeasurment();
-
-  // wait for proper amount of time according to startMeasurment function result
-  delay(result);
-
-  // read temperature and pressure from BMP280 sensor and save values to T and P variables
-  bmp.getTemperatureAndPressure(T,P);
+  // start measurement, wait for result and save results in T and P variables 
+  bmp.measureTemperatureAndPressure(T, P);
   
   // since we use it solely as pressure sensor print only "Pressure = " text
   SerialUSB.print("Pressure = ");
