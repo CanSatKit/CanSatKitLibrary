@@ -185,7 +185,6 @@ char BMP280::setOversampling(short oss)
 ** @returns : delay in ms to wait, or 0 if I2C error.
 */
 char BMP280::startMeasurment(void)
-
 {
 	unsigned char data[2], result, delay;
 	
@@ -273,7 +272,7 @@ char BMP280::getUnPT(double &uP, double &uT)
 ** @param : T = stores the temperature value in degC.
 ** @param : P = stores the pressure value in mBar.
 */
-char BMP280::getTemperatureAndPressure(double &T,double &P)
+char BMP280::getTemperatureAndPressure(double &T, double &P)
 {
 	double uT ;
 	double uP;
