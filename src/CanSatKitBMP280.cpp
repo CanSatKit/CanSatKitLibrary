@@ -296,6 +296,18 @@ char BMP280::getTemperatureAndPressure(double &T, double &P)
 	return (9);
 }
 /*
+** Start measurement and retrieve temperature and pressure.
+** @param : T = stores the temperature value in degC.
+** @param : P = stores the pressure value in mBar.
+*/
+char BMP280::measureTemperatureAndPressure(double &T, double &P)
+{
+	int time_to_wait = BMP280::startMeasurment();
+	delay(time_to_wait);
+	return BMP280::getTemperatureAndPressure(T, P);
+}
+
+/*
 ** temperature calculation
 ** @param : T  = stores the temperature value after calculation.
 ** @param : uT = the uncalibrated temperature value.
