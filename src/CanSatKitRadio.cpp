@@ -6,14 +6,19 @@
 #include "CanSatKitRadio.h"
 #include "fifo.h"
 
+using namespace CanSatKit;
+
 
 // FIFO for 10 frames
 FIFO<uint8_t, 2571> fifo_tx, fifo_rx;
 
 static int pin_cs, pin_dio0;
-static bool debug_enabled = true;
+static float frequency_in_mhz;
+static Radio::Bandwidth bandwidth;
+static Radio::SpreadingFactor spreadingFactor;
+static Radio::CodingRate codingRate;
 
-CanSatKitRadio_ CanSatKitRadio;
+static bool debug_enabled = true;
 
 
 static constexpr uint8_t SPI_READ = 0b00000000;
@@ -284,9 +289,16 @@ enum class Mode {
 };
 void set_mode(Mode);
 
-bool CanSatKitRadio_::begin(int pin_cs_, int pin_dio0_, float frequency_in_mhz, Bandwidth bandwidth, SpreadingFactor spreadingFactor, CodingRate codingRate) {
+Radio::Radio(int pin_cs_, int pin_dio0_, float frequency_in_mhz_, Bandwidth bandwidth_, SpreadingFactor spreadingFactor_, CodingRate codingRate_) {
   pin_cs = pin_cs_;
   pin_dio0 = pin_dio0_;
+  frequency_in_mhz = frequency_in_mhz_;
+  bandwidth = bandwidth_;
+  spreadingFactor = spreadingFactor_;
+  codingRate = codingRate_;
+}
+
+bool Radio::begin() {
   pinMode(pin_dio0, INPUT);
   pinMode(pin_cs, OUTPUT);
   digitalWrite(pin_cs, HIGH);
@@ -355,7 +367,7 @@ volatile static Mode mode;
 static uint8_t frame_buffer[256];
 volatile static uint8_t frames_in_rx_fifo = 0;
 
-void CanSatKitRadio_::disable_debug() {
+void Radio::disable_debug() {
   debug_enabled = false;
 }
 
@@ -444,15 +456,21 @@ void radio_interrupt() {
   
 // TX mode
 
-bool CanSatKitRadio_::transmit(const char* str) {
+bool Radio::transmit(Frame frame) {
+  auto result = transmit(frame.buffer, frame.size);
+  frame.size = 0;
+  return result;
+}
+
+bool Radio::transmit(const char* str) {
   return transmit(str, strlen(str));
 }
 
-bool CanSatKitRadio_::transmit(const char* data, std::uint8_t length) {
+bool Radio::transmit(const char* data, std::uint8_t length) {
   return transmit((const uint8_t *)(data), length);
 }
 
-bool CanSatKitRadio_::transmit(const uint8_t* data, uint8_t length) {
+bool Radio::transmit(const uint8_t* data, uint8_t length) {
   // begin transaction just to block interrupt
   SPI.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE0));
   
@@ -486,22 +504,22 @@ bool CanSatKitRadio_::transmit(const uint8_t* data, uint8_t length) {
   return true;
 }
 
-void CanSatKitRadio_::flush() {
+void Radio::flush() {
   while (mode != Mode::Receive);
 }
 
 
 // RX mode
 
-std::uint8_t CanSatKitRadio_::available() {
+std::uint8_t Radio::available() {
   return frames_in_rx_fifo;
 }
 
-void CanSatKitRadio_::receive(char* data, uint8_t& length) {
+void Radio::receive(char* data, uint8_t& length) {
   receive((uint8_t*)data, length);
 }
 
-void CanSatKitRadio_::receive(uint8_t* data, uint8_t& length) {
+void Radio::receive(uint8_t* data, uint8_t& length) {
   while (fifo_rx.size() == 0);
   
   length = fifo_rx.get();
@@ -514,10 +532,10 @@ void CanSatKitRadio_::receive(uint8_t* data, uint8_t& length) {
   frames_in_rx_fifo--;
 }
 
-int8_t CanSatKitRadio_::get_rssi_last() {
+int8_t Radio::get_rssi_last() {
   return(-164 + read_register(SX1278_REG_PKT_RSSI_VALUE));
 }
 
-int8_t CanSatKitRadio_::get_rssi_now() {
+int8_t Radio::get_rssi_now() {
   return(-164 + read_register(SX1278_REG_RSSI_VALUE));
 }

@@ -1,23 +1,27 @@
 #include <CanSatKit.h>
 
+using namespace CanSatKit;
+
 int counter = 1;
 bool led_state = false;
 const int led_pin = 13;
 
+Radio radio(Pins::Radio::ChipSelect,
+            Pins::Radio::DIO0,
+            433.0,
+            Bandwidth_125000_Hz,
+            SpreadingFactor_9,
+            CodingRate_4_8);
+
 // create (empty) radio frame object that can store data
 // to be sent via radio
-CanSatKitRadioFrame frame;
+Frame frame;
 
 void setup() {
   SerialUSB.begin(115200);
   pinMode(led_pin, OUTPUT);
 
-  CanSatKitRadio.begin(CanSatPins_Radio_CS,
-                       CanSatPins_Radio_DIO0,
-                       433.0,
-                       Bandwidth_125000_Hz,
-                       SpreadingFactor_9,
-                       CodingRate_4_8);
+  radio.begin();
 }
 
 void loop() {
@@ -34,7 +38,10 @@ void loop() {
   frame.print(". Hello CanSat!");
 
   // send frame via radio and clear frame to make it ready for new data!
-  frame.send();
+  radio.transmit(frame);
+
+  // print frame also on SerialUSB
+  SerialUSB.println(frame);
 
   // wait for 1 s
   delay(1000);

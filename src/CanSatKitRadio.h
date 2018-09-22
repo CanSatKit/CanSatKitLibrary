@@ -1,10 +1,34 @@
-#ifndef CANSATKITLIBRARY_CANSATKITRADIO_H_
-#define CANSATKITLIBRARY_CANSATKITRADIO_H_
+#ifndef CANSATKITLIBRARY_RadioH_
+#define CANSATKITLIBRARY_RadioH_
 
 #include <cstdint>
 
+namespace CanSatKit {
 
-class CanSatKitRadio_ {
+class Frame : public Print {
+  public:
+  constexpr static int max_size = 256;
+  int size;
+  char buffer[max_size];
+
+  Frame() : size(0) {}
+
+  virtual size_t write(uint8_t x) {
+    if (size >= max_size) {
+      return 0;
+    }
+    buffer[size++] = x;
+    return 1;
+  }
+
+  operator const char*() {
+    write('\0');
+    size = 0;
+    return buffer;
+  }
+};
+
+class Radio {
  public:
   enum class Bandwidth {
     _7800_Hz = 0b00000000,
@@ -36,9 +60,11 @@ class CanSatKitRadio_ {
   };
   
   
-  static bool begin(int pin_cs_, int pin_dio0_, float frequency_in_mhz, Bandwidth bandwidth, SpreadingFactor spreadingFactor, CodingRate codingRate);
+  Radio(int pin_cs_, int pin_dio0_, float frequency_in_mhz, Bandwidth bandwidth, SpreadingFactor spreadingFactor, CodingRate codingRate);
+  static bool begin();
   static void disable_debug();
   
+  static bool transmit(Frame frame);
   static bool transmit(const char* str);
   static bool transmit(const char* data, std::uint8_t length);
   static bool transmit(const std::uint8_t* data, std::uint8_t length);
@@ -48,52 +74,35 @@ class CanSatKitRadio_ {
   static void receive(char* data, std::uint8_t& length);
   static void receive(std::uint8_t* data, std::uint8_t& length);
   static std::int8_t get_rssi_last();
-  static std::int8_t get_rssi_now();  
+  static std::int8_t get_rssi_now();
 };
 
-extern CanSatKitRadio_ CanSatKitRadio;
+constexpr static auto Bandwidth_7800_Hz = Radio::Bandwidth::_7800_Hz;
+constexpr static auto Bandwidth_10400_Hz = Radio::Bandwidth::_10400_Hz;
+constexpr static auto Bandwidth_15600_Hz = Radio::Bandwidth::_15600_Hz;
+constexpr static auto Bandwidth_20800_Hz = Radio::Bandwidth::_20800_Hz;
+constexpr static auto Bandwidth_31250_Hz = Radio::Bandwidth::_31250_Hz;
+constexpr static auto Bandwidth_41700_Hz = Radio::Bandwidth::_41700_Hz;
+constexpr static auto Bandwidth_62500_Hz = Radio::Bandwidth::_62500_Hz;
+constexpr static auto Bandwidth_125000_Hz = Radio::Bandwidth::_125000_Hz;
+constexpr static auto Bandwidth_250000_Hz = Radio::Bandwidth::_250000_Hz;
+constexpr static auto Bandwidth_500000_Hz = Radio::Bandwidth::_500000_Hz;
 
-constexpr static auto Bandwidth_7800_Hz = CanSatKitRadio_::Bandwidth::_7800_Hz;
-constexpr static auto Bandwidth_10400_Hz = CanSatKitRadio_::Bandwidth::_10400_Hz;
-constexpr static auto Bandwidth_15600_Hz = CanSatKitRadio_::Bandwidth::_15600_Hz;
-constexpr static auto Bandwidth_20800_Hz = CanSatKitRadio_::Bandwidth::_20800_Hz;
-constexpr static auto Bandwidth_31250_Hz = CanSatKitRadio_::Bandwidth::_31250_Hz;
-constexpr static auto Bandwidth_41700_Hz = CanSatKitRadio_::Bandwidth::_41700_Hz;
-constexpr static auto Bandwidth_62500_Hz = CanSatKitRadio_::Bandwidth::_62500_Hz;
-constexpr static auto Bandwidth_125000_Hz = CanSatKitRadio_::Bandwidth::_125000_Hz;
-constexpr static auto Bandwidth_250000_Hz = CanSatKitRadio_::Bandwidth::_250000_Hz;
-constexpr static auto Bandwidth_500000_Hz = CanSatKitRadio_::Bandwidth::_500000_Hz;
+constexpr static auto SpreadingFactor_7 = Radio::SpreadingFactor::_7;
+constexpr static auto SpreadingFactor_8 = Radio::SpreadingFactor::_8;
+constexpr static auto SpreadingFactor_9 = Radio::SpreadingFactor::_9;
+constexpr static auto SpreadingFactor_10 = Radio::SpreadingFactor::_10;
+constexpr static auto SpreadingFactor_11 = Radio::SpreadingFactor::_11;
+constexpr static auto SpreadingFactor_12 = Radio::SpreadingFactor::_12;
 
-constexpr static auto SpreadingFactor_7 = CanSatKitRadio_::SpreadingFactor::_7;
-constexpr static auto SpreadingFactor_8 = CanSatKitRadio_::SpreadingFactor::_8;
-constexpr static auto SpreadingFactor_9 = CanSatKitRadio_::SpreadingFactor::_9;
-constexpr static auto SpreadingFactor_10 = CanSatKitRadio_::SpreadingFactor::_10;
-constexpr static auto SpreadingFactor_11 = CanSatKitRadio_::SpreadingFactor::_11;
-constexpr static auto SpreadingFactor_12 = CanSatKitRadio_::SpreadingFactor::_12;
-
-constexpr static auto CodingRate_4_5 = CanSatKitRadio_::CodingRate::_4_5;
-constexpr static auto CodingRate_4_6 = CanSatKitRadio_::CodingRate::_4_6;
-constexpr static auto CodingRate_4_7 = CanSatKitRadio_::CodingRate::_4_7;
-constexpr static auto CodingRate_4_8 = CanSatKitRadio_::CodingRate::_4_8;
+constexpr static auto CodingRate_4_5 = Radio::CodingRate::_4_5;
+constexpr static auto CodingRate_4_6 = Radio::CodingRate::_4_6;
+constexpr static auto CodingRate_4_7 = Radio::CodingRate::_4_7;
+constexpr static auto CodingRate_4_8 = Radio::CodingRate::_4_8;
 
 
-class CanSatKitRadioFrame : public Print {
- public:
-  int size;
-  char buffer[256];
-
-  CanSatKitRadioFrame() : size(0) {}
-
-  virtual size_t write(uint8_t x) {
-    buffer[size++] = x;
-    return 1;
-  }
-
-  void send() {
-    CanSatKitRadio.transmit(buffer, size);
-    size = 0;
-  }
-};
 
 
-#endif  // CANSATKITLIBRARY_CANSATKITRADIO_H_
+};  // namespace CanSatKit
+
+#endif  // CANSATKITLIBRARY_RadioH_

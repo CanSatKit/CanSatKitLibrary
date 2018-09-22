@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <math.h>
 
+using namespace CanSatKit;
 
 BMP280::BMP280()
 {
