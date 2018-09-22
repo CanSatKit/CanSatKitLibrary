@@ -1,6 +1,8 @@
 // include CanSatKit library used for pressure sensor
 #include <CanSatKit.h>
 
+using namespace CanSatKit;
+
 // BMP280 is a pressure sensor, create the sensor object
 BMP280 bmp;
 

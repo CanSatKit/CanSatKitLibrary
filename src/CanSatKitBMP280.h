@@ -1,14 +1,9 @@
 #ifndef BMP280_h
 #define BMP280_h
 
-#if defined(ARDUINO) && ARDUINO >= 100
 #include "Arduino.h"
-#else
-#include "WProgram.h"
-#endif
 
-// #define _debugSerial
-// #define _debugTestData
+namespace CanSatKit {
 
 class BMP280
 {
@@ -103,5 +98,6 @@ class BMP280
 #define	BMP280_COMMAND_PRESSURE4 0x5D    
 #define	BMP280_COMMAND_OVERSAMPLING_MAX 0xF5
 
+};  // namespace CanSatKit
 
 #endif

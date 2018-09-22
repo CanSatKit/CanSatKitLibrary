@@ -4,9 +4,19 @@
 #include "CanSatKitRadio.h"
 #include "CanSatKitBMP280.h"
 
-constexpr int CanSatPins_Radio_CS = 10;
-constexpr int CanSatPins_Radio_DIO0 = 12;
+namespace CanSatKit {
+namespace Pins {
 
-constexpr int CanSatPins_SD_CS = 11;
+namespace Radio {
+constexpr int ChipSelect = 10;
+constexpr int DIO0 = 12;
+};  // namespace Radio
+
+namespace SD {
+constexpr int ChipSelect = 11;
+};  // namespace SD
+
+};  // namespace Pins
+};  // namespace CanSatKit
 
 #endif  // CANSATKITLIBRARY_CANSATKIT_H_
