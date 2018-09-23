@@ -457,8 +457,8 @@ void radio_interrupt() {
 // TX mode
 
 bool Radio::transmit(Frame frame) {
+  frame.buffer[frame.size] = '\0';
   auto result = transmit(frame.buffer, frame.size);
-  frame.size = 0;
   return result;
 }
 

@@ -7,14 +7,15 @@ namespace CanSatKit {
 
 class Frame : public Print {
   public:
-  constexpr static int max_size = 256;
-  int size;
+  constexpr static std::uint8_t max_size = 255;
+  std::uint8_t size;
   char buffer[max_size];
 
   Frame() : size(0) {}
 
   virtual size_t write(uint8_t x) {
-    if (size >= max_size) {
+    // one byte for null termination
+    if (size >= max_size - 1) {
       return 0;
     }
     buffer[size++] = x;
@@ -22,9 +23,12 @@ class Frame : public Print {
   }
 
   operator const char*() {
-    write('\0');
-    size = 0;
+    buffer[size] = '\0';
     return buffer;
+  }
+
+  void clear() {
+    size = 0;
   }
 };
 

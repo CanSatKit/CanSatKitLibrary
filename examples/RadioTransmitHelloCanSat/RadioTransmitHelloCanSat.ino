@@ -37,11 +37,14 @@ void loop() {
   // (append to previous content)
   frame.print(". Hello CanSat!");
 
-  // send frame via radio and clear frame to make it ready for new data!
+  // send frame via radio
   radio.transmit(frame);
 
   // print frame also on SerialUSB
   SerialUSB.println(frame);
+
+  // clear frame to make it ready for new data
+  frame.clear();
 
   // wait for 1 s
   delay(1000);
