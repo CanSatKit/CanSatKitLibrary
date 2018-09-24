@@ -15,7 +15,7 @@ Radio radio(Pins::Radio::ChipSelect,
 void setup() {
   SerialUSB.begin(115200);
 
-  
+  // start radio module  
   radio.begin();
 }
 
@@ -27,9 +27,6 @@ void loop() {
   // receive data and save it to data array, save also length of the message
   radio.receive(data, length);
   
-  // add termination character to the end of the message
-  data[length] = '\0';
-
   // get and print signal level (rssi)
   SerialUSB.print("Received (RSSI = ");
   SerialUSB.print(radio.get_rssi_last());
