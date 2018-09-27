@@ -15,10 +15,10 @@ class BMP280
 			// call pressure.begin() to initialize BMP280 before use
 			// returns 1 if success, 0 if failure (i2C connection problem.)
 				
-		short getOversampling(void);
+		short getOversampling();
 		char  setOversampling(short oss);
 		
-		char startMeasurment(void);
+		char startMeasurment();
 			// command BMP280 to start a pressure measurement
 			// oversampling: 0 - 3 for oversampling value
 			// returns (number of ms to wait) for success, 0 for fail
@@ -29,7 +29,7 @@ class BMP280
 		char calcPressure(double &P, double uP);
 			//calculation for measuring pressure.
 
-		char getError(void);
+		char getError();
 			// If any library command fails, you can retrieve an extended
 			// error code using this command. Errors are from the wire library: 
 			// 0 = Success
