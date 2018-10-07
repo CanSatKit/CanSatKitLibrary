@@ -137,8 +137,6 @@ char BMP280::readUInt(char address, double &value)
 
 char BMP280::readBytes(unsigned char *values, char length)
 {
-	char x;
-
 	Wire.beginTransmission(BMP280_ADDR);
 	Wire.write(values[0]);
 	error = Wire.endTransmission();
@@ -146,7 +144,7 @@ char BMP280::readBytes(unsigned char *values, char length)
 	{
 		Wire.requestFrom(BMP280_ADDR,length);
 		while(Wire.available() != length) ; // wait until bytes are ready
-		for(x=0;x<length;x++)
+		for (uint8_t x=0;x<length;x++)
 		{
 			values[x] = Wire.read();
 		}
@@ -250,7 +248,6 @@ char BMP280::getUnPT(double &uP, double &uT)
 	result = readBytes(data, 6); // 0xF7; xF8, 0xF9, 0xFA, 0xFB, 0xFC
 	if (result) // good read
 	{
-		double factor = pow(2, 4);
 		uP = (double)(data[0] *4096 + data[1]*16 + data[2]/16) ;	//20bit UP
 		uT = (double)(data[3]*4096 + data[4]*16 + data[5]/16) ;	//20bit UT
 #ifdef _debugSerial

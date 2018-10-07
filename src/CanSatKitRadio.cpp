@@ -6,6 +6,9 @@
 #include "CanSatKitRadio.h"
 #include "fifo.h"
 
+using std::uint8_t;
+using std::uint16_t;
+using std::uint32_t;
 using namespace CanSatKit;
 
 
@@ -437,7 +440,7 @@ void radio_interrupt() {
     auto length = read_register(SX1278_REG_RX_NB_BYTES);
     read_register_burst(SX1278_REG_FIFO, frame_buffer, length);
 
-    if (fifo_rx.free_space() > length+1) {
+    if (fifo_rx.free_space() > length+1u) {
       frames_in_rx_fifo++;
       
       fifo_rx.append(length);
@@ -480,7 +483,7 @@ bool Radio::transmit(const uint8_t* data, uint8_t length) {
     set_mode(Mode::Transmit);
   }
   
-  if (fifo_tx.free_space() < length+1) {
+  if (fifo_tx.free_space() < length+1u) {
     if (debug_enabled) {
       SerialUSB.println("[radio] TX buffer full!");
     }
