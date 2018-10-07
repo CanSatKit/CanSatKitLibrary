@@ -21,11 +21,12 @@ void setup() {
 
 void loop() {
   // prepare empty space for received frame
+  // maximum length is maximum frame length + null termination
+  // 255 + 1 byte = 256 bytes
   char data[256];
-  uint8_t length;
 
-  // receive data and save it to data array, save also length of the message
-  radio.receive(data, length);
+  // receive data and save it to string
+  radio.receive(data);
   
   // get and print signal level (rssi)
   SerialUSB.print("Received (RSSI = ");

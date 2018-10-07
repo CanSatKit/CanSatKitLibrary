@@ -457,17 +457,12 @@ void radio_interrupt() {
 // TX mode
 
 bool Radio::transmit(Frame frame) {
-  frame.buffer[frame.size] = '\0';
-  auto result = transmit(frame.buffer, frame.size);
-  return result;
+  return transmit(frame.operator const char*());
 }
 
 bool Radio::transmit(const char* str) {
-  return transmit(str, strlen(str));
-}
-
-bool Radio::transmit(const char* data, std::uint8_t length) {
-  return transmit((const uint8_t *)(data), length);
+  // transmit frame with the null-termination character included
+  return transmit(reinterpret_cast<const uint8_t*>(str), strlen(str)+1);
 }
 
 bool Radio::transmit(const uint8_t* data, uint8_t length) {
@@ -515,8 +510,9 @@ std::uint8_t Radio::available() {
   return frames_in_rx_fifo;
 }
 
-void Radio::receive(char* data, uint8_t& length) {
-  receive((uint8_t*)data, length);
+void Radio::receive(char* data) {
+  uint8_t dummy;
+  receive((uint8_t*)data, dummy);
 }
 
 void Radio::receive(uint8_t* data, uint8_t& length) {
