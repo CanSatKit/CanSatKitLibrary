@@ -466,6 +466,10 @@ bool Radio::transmit(const char* str) {
   return transmit(str, strlen(str));
 }
 
+bool Radio::transmit(String str) {
+  return transmit(str.c_str(), strlen(str.c_str()));
+}
+
 bool Radio::transmit(const char* data, std::uint8_t length) {
   return transmit((const uint8_t *)(data), length);
 }
