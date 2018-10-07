@@ -458,7 +458,7 @@ void radio_interrupt() {
 
 bool Radio::transmit(Frame frame) {
   frame.buffer[frame.size] = '\0';
-  auto result = transmit(frame.buffer, frame.size);
+  auto result = transmit(frame.buffer, frame.size+1);
   return result;
 }
 
