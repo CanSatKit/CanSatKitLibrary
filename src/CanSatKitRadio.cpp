@@ -464,11 +464,28 @@ bool Radio::transmit(Frame frame) {
 }
 
 bool Radio::transmit(const char* str) {
+  auto length = strlen(str);
+  if (length >= 255) {
+    return false;
+  }
   // transmit frame with the null-termination character included
-  return transmit(reinterpret_cast<const uint8_t*>(str), strlen(str)+1);
+  return transmit(reinterpret_cast<const uint8_t*>(str), length + 1);
 }
 
 bool Radio::transmit(const uint8_t* data, uint8_t length) {
+  if (length == 0) {
+    if (debug_enabled) {
+      SerialUSB.println("[radio] empty frame!");
+    }
+    return false;
+  }
+  if (fifo_tx.free_space() < length+1u) {
+    if (debug_enabled) {
+      SerialUSB.println("[radio] TX buffer full!");
+    }
+    return false;
+  }
+
   // begin transaction just to block interrupt
   SPI.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE0));
   
@@ -476,13 +493,6 @@ bool Radio::transmit(const uint8_t* data, uint8_t length) {
   if (mode != Mode::Transmit) {
     mode_switch = true;
     set_mode(Mode::Transmit);
-  }
-  
-  if (fifo_tx.free_space() < length+1u) {
-    if (debug_enabled) {
-      SerialUSB.println("[radio] TX buffer full!");
-    }
-    return false;
   }
   
   fifo_tx.append(length);
@@ -531,10 +541,10 @@ void Radio::receive(uint8_t* data, uint8_t& length) {
   frames_in_rx_fifo--;
 }
 
-int8_t Radio::get_rssi_last() {
-  return(-164 + read_register(SX1278_REG_PKT_RSSI_VALUE));
+int Radio::get_rssi_last() {
+  return -164 + read_register(SX1278_REG_PKT_RSSI_VALUE);
 }
 
-int8_t Radio::get_rssi_now() {
-  return(-164 + read_register(SX1278_REG_RSSI_VALUE));
+int Radio::get_rssi_now() {
+  return -164 + read_register(SX1278_REG_RSSI_VALUE);
 }

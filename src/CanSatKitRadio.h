@@ -76,8 +76,8 @@ class Radio {
   static std::uint8_t available();
   static void receive(char* data);
   static void receive(std::uint8_t* data, std::uint8_t& length);
-  static std::int8_t get_rssi_last();
-  static std::int8_t get_rssi_now();
+  static int get_rssi_last();
+  static int get_rssi_now();
 };
 
 constexpr static auto Bandwidth_7800_Hz = Radio::Bandwidth::_7800_Hz;
