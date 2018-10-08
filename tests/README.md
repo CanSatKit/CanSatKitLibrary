@@ -1,3 +1,5 @@
+Install ArduinoUnit library.
+
 To use this test:
  - flash two boards - with first.ino and second.ino sketches
  - open serial console on the first board (flashed with first.ino)
