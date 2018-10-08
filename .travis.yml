@@ -12,6 +12,8 @@ env:
      - ARDUINO_IDE_VERSION="1.8.5"
 before_install:
   - source <(curl -SLs https://raw.githubusercontent.com/adafruit/travis-ci-arduino/master/install.sh)
+install:
+  - arduino --install-library "ArduinoUnit"
 script:
   - build_platform arduino:samd:mzero_bl
 notifications:
