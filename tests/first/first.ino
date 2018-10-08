@@ -85,7 +85,8 @@ CANSAT_TEST(1_receive_string) {
     "187",
     "187 tester",
     "187 testerfoo 2.56",
-    "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+    "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "abc 12 123.98\n"
   };
 
   for (int test = 0; test < sizeof(strings_to_receive)/sizeof(strings_to_receive[0]); ++test) {

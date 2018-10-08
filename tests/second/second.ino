@@ -114,6 +114,18 @@ CANSAT_TEST(1_receive_string) {
   assertTrue(radio.transmit(frame));
   assertEqual(0, frame.println());
   assertEqual(frame.size, 254);
+
+  String string;
+  string += "abc";
+  string += ' ';
+  int tmp6 = 18;
+  string += String(tmp6, HEX);
+  string += String(' ');
+  string += '1';
+  float f = 23.98;
+  string += String(f);
+  string += '\n';
+  assertTrue(radio.transmit(string));
 }
 
 CANSAT_TEST(2_receive_bytes) {
