@@ -6,6 +6,9 @@
 #include "CanSatKitRadio.h"
 #include "fifo.h"
 
+using std::uint8_t;
+using std::uint16_t;
+using std::uint32_t;
 using namespace CanSatKit;
 
 
@@ -437,7 +440,7 @@ void radio_interrupt() {
     auto length = read_register(SX1278_REG_RX_NB_BYTES);
     read_register_burst(SX1278_REG_FIFO, frame_buffer, length);
 
-    if (fifo_rx.free_space() > length+1) {
+    if (fifo_rx.free_space() > length+1u) {
       frames_in_rx_fifo++;
       
       fifo_rx.append(length);
@@ -457,24 +460,32 @@ void radio_interrupt() {
 // TX mode
 
 bool Radio::transmit(Frame frame) {
-  frame.buffer[frame.size] = '\0';
-  auto result = transmit(frame.buffer, frame.size);
-  return result;
+  return transmit(frame.operator const char*());
 }
 
 bool Radio::transmit(const char* str) {
-  return transmit(str, strlen(str));
-}
-
-bool Radio::transmit(String str) {
-  return transmit(str.c_str(), strlen(str.c_str()));
-}
-
-bool Radio::transmit(const char* data, std::uint8_t length) {
-  return transmit((const uint8_t *)(data), length);
+  auto length = strlen(str);
+  if (length >= 255) {
+    return false;
+  }
+  // transmit frame with the null-termination character included
+  return transmit(reinterpret_cast<const uint8_t*>(str), length + 1);
 }
 
 bool Radio::transmit(const uint8_t* data, uint8_t length) {
+  if (length == 0) {
+    if (debug_enabled) {
+      SerialUSB.println("[radio] empty frame!");
+    }
+    return false;
+  }
+  if (fifo_tx.free_space() < length+1u) {
+    if (debug_enabled) {
+      SerialUSB.println("[radio] TX buffer full!");
+    }
+    return false;
+  }
+
   // begin transaction just to block interrupt
   SPI.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE0));
   
@@ -482,13 +493,6 @@ bool Radio::transmit(const uint8_t* data, uint8_t length) {
   if (mode != Mode::Transmit) {
     mode_switch = true;
     set_mode(Mode::Transmit);
-  }
-  
-  if (fifo_tx.free_space() < length+1) {
-    if (debug_enabled) {
-      SerialUSB.println("[radio] TX buffer full!");
-    }
-    return false;
   }
   
   fifo_tx.append(length);
@@ -519,8 +523,9 @@ std::uint8_t Radio::available() {
   return frames_in_rx_fifo;
 }
 
-void Radio::receive(char* data, uint8_t& length) {
-  receive((uint8_t*)data, length);
+void Radio::receive(char* data) {
+  uint8_t dummy;
+  receive((uint8_t*)data, dummy);
 }
 
 void Radio::receive(uint8_t* data, uint8_t& length) {
@@ -536,10 +541,10 @@ void Radio::receive(uint8_t* data, uint8_t& length) {
   frames_in_rx_fifo--;
 }
 
-int8_t Radio::get_rssi_last() {
-  return(-164 + read_register(SX1278_REG_PKT_RSSI_VALUE));
+int Radio::get_rssi_last() {
+  return -164 + read_register(SX1278_REG_PKT_RSSI_VALUE);
 }
 
-int8_t Radio::get_rssi_now() {
-  return(-164 + read_register(SX1278_REG_RSSI_VALUE));
+int Radio::get_rssi_now() {
+  return -164 + read_register(SX1278_REG_RSSI_VALUE);
 }
