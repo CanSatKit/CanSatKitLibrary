@@ -37,15 +37,20 @@ void setup() {
 
 void check_empty() {
   delay(3000);
+  assertFalse(radio.available());
   while(radio.available()) {
     uint8_t data[256];
     uint8_t length;
     radio.receive(data, length);
     SerialUSB.print("GOT ");
     SerialUSB.print(length);
-    SerialUSB.print(": |");
-    SerialUSB.print((char*)data);
-    SerialUSB.println("|");
+    SerialUSB.print(": ");
+    for(int i = 0; i < length; ++i) {
+      uint8_t value = data[i];
+      SerialUSB.print(value);
+      SerialUSB.print(", ");
+    }
+    SerialUSB.println();
   }
 }
 
@@ -118,7 +123,6 @@ CANSAT_TEST(2_receive_bytes) {
   const uint8_t bytes_to_receive[nr_of_tests][256] = {
     {3, 0, 1, 2},
     {1, 3},
-//     // {0}, // empty frame is not sent by the module
     {255, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
   };
 
@@ -149,7 +153,7 @@ CANSAT_TEST(2_receive_bytes) {
 CANSAT_TEST(3_fill_buffer) {
   while (radio.available() != 10);
 
-  for (int test = 0; test < 10; ++test) {
+  for (int test = 0; test < 11; ++test) {
     assertEqual(radio.available(), 10-test);
 
     SerialUSB.print("Case ");
