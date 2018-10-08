@@ -5,5 +5,5 @@ To use this test:
  - observe both outputs
 
 Proper result is signalised by:
-```Test summary: 6 passed, 0 failed, and 0 skipped, out of 6 test(s).```
+```Test summary: 7 passed, 0 failed, and 0 skipped, out of 7 test(s).```
 Make sure all the test passed on both boards.

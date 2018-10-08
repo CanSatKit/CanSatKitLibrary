@@ -175,6 +175,23 @@ CANSAT_TEST(5_bidirectional) {
   assertEqual(0, strcmp(str, data));
 }
 
+CANSAT_TEST(6_rx_buffer_overflow) {
+  uint8_t buffer[255];
+  for (int i = 0; i < sizeof(buffer); ++i) {
+    buffer[i] = i % 0xFF;
+  }
+
+  for (int i = 0; i < 10; ++i) {
+    assertTrue(radio.transmit(buffer, 255));
+  }
+  radio.flush();
+  radio.transmit("TEST_SHOULD_BE_DROPPED");
+  radio.flush();
+
+  delay(4000);
+  radio.transmit("pass");
+}
+
 void loop() {
   Test::run();
 }

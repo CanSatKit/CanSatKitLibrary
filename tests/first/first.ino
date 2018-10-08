@@ -196,6 +196,53 @@ CANSAT_TEST(5_bidirectional) {
   radio.flush();
 }
 
+CANSAT_TEST(6_rx_buffer_overflow) {
+  while (radio.available() != 10);
+  delay(2000);
+
+  for (int test = 0; test < 5; ++test) {
+    assertEqual(radio.available(), 10-test);
+
+    SerialUSB.print("Case ");
+    SerialUSB.println(test);
+
+    uint8_t data[255];
+    uint8_t length = 47;
+    radio.receive(data, length);
+
+    assertEqual(length, 255);
+
+    for (int i = 0; i < length; ++i) {
+      assertEqual(data[i], i % 0xFF);
+    }
+  }
+
+  while (radio.available() != 6);
+  assertEqual(radio.available(), 6);
+
+  for (int test = 0; test < 5; ++test) {
+    assertEqual(radio.available(), 6-test);
+
+    SerialUSB.print("Case ");
+    SerialUSB.println(test);
+
+    uint8_t data[255];
+    uint8_t length = 47;
+    radio.receive(data, length);
+
+    assertEqual(length, 255);
+
+    for (int i = 0; i < length; ++i) {
+      assertEqual(data[i], i % 0xFF);
+    }
+  }
+
+  assertEqual(radio.available(), 1);
+  char data[256];
+  radio.receive(data);
+  assertEqual(0, strcmp(data, "pass"));
+}
+
 void loop() {
   Test::run();
 }
