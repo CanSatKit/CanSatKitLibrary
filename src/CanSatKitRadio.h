@@ -69,6 +69,7 @@ class Radio {
   static void disable_debug();
   
   static bool transmit(Frame frame);
+  static bool transmit(String str);
   static bool transmit(const char* str);
   static bool transmit(const std::uint8_t* data, std::uint8_t length);
   static void flush();

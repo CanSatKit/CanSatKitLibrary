@@ -472,6 +472,10 @@ bool Radio::transmit(const char* str) {
   return transmit(reinterpret_cast<const uint8_t*>(str), length + 1);
 }
 
+bool Radio::transmit(String str) {
+  return transmit(str.c_str());
+}
+
 bool Radio::transmit(const uint8_t* data, uint8_t length) {
   if (length == 0) {
     if (debug_enabled) {
