@@ -8,6 +8,7 @@ namespace CanSatKit {
 /**
  * @brief Frame object represents one radio frame to be send over the RF link.
  * Use it the same as Serial/SerialUSB devices.
+ * Frame should consist of ASCII-characters only.
  * Remembers data in internal buffer, to be send using radio.transmit() method.
  * Maximum data length is 254 bytes (+1 byte of null termination).
  */
@@ -30,6 +31,9 @@ class Frame : public Print {
     return buffer;
   }
 
+  /**
+   * @brief Clear frame
+   */
   void clear() {
     size = 0;
   }
@@ -80,21 +84,97 @@ class Radio {
     _4_8 = 0b00001000,
   };
   
-  
+  /**
+   * @brief Construct a new Radio object. 
+   * Settings should be the same on the receiver and transmitter.
+   * Make sure that you comply with CanSat and local regulations.
+   * Settings reflect on bitrate and link budget.
+   * Bitrate = bandwidth/(2**spreadingFactor) * codingRate
+   * 
+   * @param pin_cs_  Arduino pin number connected to radio CS pin. Set to `Pins::Radio::ChipSelect` if you use CanSatKit.
+   * @param pin_dio0_ Arduino pin number connected to radio DIO0 pin. Set to `Pins::Radio::DIO0` if you use CanSatKit.
+   * @param frequency_in_mhz Set radio center frequency.
+   * @param bandwidth Set module radio bandwidth.
+   * @param spreadingFactor Set module spreading factor.
+   * @param codingRate Set module coding rate.
+   */
   Radio(int pin_cs_, int pin_dio0_, float frequency_in_mhz, Bandwidth bandwidth, SpreadingFactor spreadingFactor, CodingRate codingRate);
+  /**
+   * @brief Start communication with radio module.
+   * Sets proper radio settings and starts module in receive mode.
+   * 
+   * @return `true`: Communication succeeded, module initialised properly. `false`: Module initialisation failed.
+   */
   static bool begin();
+
+  /**
+   * @brief Disable debug messages on SerialUSB.
+   */
   static void disable_debug();
   
+  /**
+   * @brief Put frame into the transmit buffer.
+   * @return `true` if frame put into buffer. `false` if not enught space in the buffer.
+   */
   static bool transmit(Frame frame);
+
+  /**
+   * @brief Put String str into the transmit buffer.
+   * @return `true` if frame put into buffer. `false` if not enught space in the buffer.
+   */
   static bool transmit(String str);
+
+  /**
+   * @brief Put string str into the transmit buffer.
+   * @return `true` if frame put into buffer. `false` if not enught space in the buffer.
+   */
   static bool transmit(const char* str);
+
+  /**
+   * @brief Put binary data into the transmit buffer (byte table of length length).
+   * @return `true` if frame put into buffer. `false` if not enught space in the buffer.
+   */
   static bool transmit(const std::uint8_t* data, std::uint8_t length);
+
+  /**
+   * @brief Waits until all frames in the transmit buffer are transmitted.
+   */
   static void flush();
   
+
+  /**
+   * @brief Get number of frames in receive buffer
+   * 
+   * @return std::uint8_t Number of received frames.
+   */
   static std::uint8_t available();
+
+  /**
+   * @brief Get character string from receive buffer
+   * @param data pointer to fill with data
+   */
   static void receive(char* data);
+
+  /**
+   * @brief Get binary data from receive buffer
+   * 
+   * @param data pointer to fill with data
+   * @param length length of received frame
+   */
   static void receive(std::uint8_t* data, std::uint8_t& length);
+
+  /**
+   * @brief Get the RSSI of last frame.
+   * 
+   * @return int RSSI in dBm
+   */
   static int get_rssi_last();
+
+  /**
+   * @brief Get the actual RSSI value.
+   * 
+   * @return int RSSI in dBm
+   */
   static int get_rssi_now();
 };
 
