@@ -9,16 +9,8 @@ BMP280::BMP280()
 {
 	//do nothing
 }
-/*
-*	Initialize library and coefficient for measurements
-*/
-char BMP280::begin(int sdaPin, int sclPin)
-{
-	Wire.begin(sdaPin,sclPin);
-	return (readCalibration());
-}
 
-char BMP280::begin() 
+bool BMP280::begin() 
 {
 	
 	// Start up the Arduino's "wire" (I2C) library:
@@ -31,7 +23,7 @@ char BMP280::begin()
 // used in the calculations when taking measurements.
 
 // Retrieve calibration data from device:
-char BMP280::readCalibration() {
+bool BMP280::readCalibration() {
 	
 	if (    
 		readUInt(0x88, dig_T1) &&
@@ -86,10 +78,10 @@ char BMP280::readCalibration() {
 		Serial.print("dig_P8="); Serial.println(dig_P8,2);
 		Serial.print("dig_P9="); Serial.println(dig_P9,2);
 #endif
-		return (1);
+		return true;
 	}
 	else 
-		return (0);
+		return false;
 }
 
 /*
@@ -97,8 +89,7 @@ char BMP280::readCalibration() {
 **	@param : address = register to start reading (plus subsequent register)
 **	@param : value   = external variable to store data (function modifies value)
 */
-char BMP280::readInt(char address, double &value)
-
+bool BMP280::readInt(char address, double &value)
 {
 	unsigned char data[2];	//char is 4bit,1byte
 
@@ -106,36 +97,36 @@ char BMP280::readInt(char address, double &value)
 	if (readBytes(data,2))
 	{
 		value = (double)(int16_t)(((unsigned int)data[1]<<8)|(unsigned int)data[0]); //
-		return(1);
+		return true;
 	}
 	value = 0;
-	return(0);
+	return false;
 }
+
 /* 
 **	Read an unsigned integer (two bytes) from device
 **	@param : address = register to start reading (plus subsequent register)
 **	@param : value 	 = external variable to store data (function modifies value)
 */
-
-char BMP280::readUInt(char address, double &value)
+bool BMP280::readUInt(char address, double &value)
 {
 	unsigned char data[2];	//4bit
 	data[0] = address;
 	if (readBytes(data,2))
 	{
 		value = (double)(unsigned int)(((unsigned int)data[1]<<8)|(unsigned int)data[0]);
-		return(1);
+		return true;
 	}
 	value = 0;
-	return(0);
+	return false;
 }
+
 /*
 ** Read an array of bytes from device
 ** @param : value  = external array to hold data. Put starting register in values[0].
 ** @param : length = number of bytes to read
 */
-
-char BMP280::readBytes(unsigned char *values, char length)
+bool BMP280::readBytes(unsigned char *values, char length)
 {
 	Wire.beginTransmission(BMP280_ADDR);
 	Wire.write(values[0]);
@@ -148,42 +139,38 @@ char BMP280::readBytes(unsigned char *values, char length)
 		{
 			values[x] = Wire.read();
 		}
-		return(1);
+		return true;
 	}
-	return(0);
+	return false;
 }
+
 /*
 ** Write an array of bytes to device
 ** @param : values = external array of data to write. Put starting register in values[0].
 ** @param : length = number of bytes to write
 */
-char BMP280::writeBytes(unsigned char *values, char length)
+bool BMP280::writeBytes(unsigned char *values, char length)
 {
 	Wire.beginTransmission(BMP280_ADDR);
 	Wire.write(values,length);
 	error = Wire.endTransmission();
 	if (error == 0)
-		return(1);
+		return true;
 	else
-		return(0);
+		return false;
 }
 
-short BMP280::getOversampling(void)
+uint8_t BMP280::getOversampling()
 {
 	return oversampling;
 }
 
-char BMP280::setOversampling(short oss)
+void BMP280::setOversampling(uint8_t oss)
 {
 	oversampling = oss;
-	return (1);
 }
-/*
-**	Begin a measurement cycle.
-** Oversampling: 0 to 4, higher numbers are slower, higher-res outputs.
-** @returns : delay in ms to wait, or 0 if I2C error.
-*/
-char BMP280::startMeasurment(void)
+
+unsigned int BMP280::startMeasurment(void)
 {
 	unsigned char data[2], result, delay;
 	
@@ -193,32 +180,26 @@ char BMP280::startMeasurment(void)
 	{
 		case 0:
 			data[1] = BMP280_COMMAND_PRESSURE0;     
-			oversampling_t = 1;
 			delay = 8;			
 		break;
 		case 1:
 			data[1] = BMP280_COMMAND_PRESSURE1;     
-			oversampling_t = 1;
 			delay = 10;			
 		break;
 		case 2:
 			data[1] = BMP280_COMMAND_PRESSURE2;		
-			oversampling_t = 1;
 			delay = 15;
 		break;
 		case 3:
 			data[1] = BMP280_COMMAND_PRESSURE3;
-			oversampling_t = 1;
 			delay = 24;
 		break;
 		case 4:
 			data[1] = BMP280_COMMAND_PRESSURE4;
-			oversampling_t = 1;
 			delay = 45;
 		break;
 		case 16:
 			data[1] = BMP280_COMMAND_OVERSAMPLING_MAX;
-			oversampling_t = 1;
 			delay = 80;	//I cannot find any data about timings in datasheet for x16 pressure and x16 temeprature oversampling
 		break;				//I guess this is enough time (maybe it can be even smaller ~60ms)
 		default:
@@ -228,9 +209,9 @@ char BMP280::startMeasurment(void)
 	}
 	result = writeBytes(data, 2);
 	if (result) // good write?
-		return(delay); // return the delay in ms (rounded up) to wait before retrieving data
+		return delay; // return the delay in ms (rounded up) to wait before retrieving data
 	else
-		return(0); // or return 0 if there was a problem communicating with the BMP
+		return 0; // or return 0 if there was a problem communicating with the BMP
 }
 
 /*
@@ -238,10 +219,10 @@ char BMP280::startMeasurment(void)
 **  @param : uP = stores the uncalibrated pressure value.(20bit)
 **  @param : uT = stores the uncalibrated temperature value.(20bit)
 */
-char BMP280::getUnPT(double &uP, double &uT)
+bool BMP280::getUnPT(double &uP, double &uT)
 {
 	unsigned char data[6];
-	char result;
+	bool result;
 	
 	data[0] = BMP280_REG_RESULT_PRESSURE; //0xF7 
 
@@ -263,41 +244,34 @@ char BMP280::getUnPT(double &uP, double &uT)
 		Serial.println(uP); 
 #endif
 	}
-	return(result);
+	return result;
 }
 /*
 ** Retrieve temperature and pressure.
 ** @param : T = stores the temperature value in degC.
 ** @param : P = stores the pressure value in mBar.
 */
-char BMP280::readTemperatureAndPressure(double &T, double &P)
+bool BMP280::readTemperatureAndPressure(double &T, double &P)
 {
 	double uT ;
 	double uP;
-	char result = getUnPT(uP,uT);
-	if(result!=0){
+	bool result = getUnPT(uP,uT);
+	if (result) {
 		// calculate the temperature
 		result = calcTemperature(T,uT);
-		if(result){
+		if(result) {
 			// calculate the pressure
 			result = calcPressure(P,uP);
-			if(result)return (1);
-			else error = 3 ;	// pressure error ;
-			return (9);
-		}else 
-			error = 2;	// temperature error ;
+			return result;
+		} else {
+			return false;
+		}
 	}
-	else 
-		error = 1;
-	
-	return (9);
+	return false;
 }
-/*
-** Start measurement and retrieve temperature and pressure.
-** @param : T = stores the temperature value in degC.
-** @param : P = stores the pressure value in mBar.
-*/
-char BMP280::measureTemperatureAndPressure(double &T, double &P)
+
+
+bool BMP280::measureTemperatureAndPressure(double &T, double &P)
 {
 	int time_to_wait = BMP280::startMeasurment();
 	delay(time_to_wait);
@@ -309,8 +283,7 @@ char BMP280::measureTemperatureAndPressure(double &T, double &P)
 ** @param : T  = stores the temperature value after calculation.
 ** @param : uT = the uncalibrated temperature value.
 */
-char BMP280::calcTemperature(double &T, double &adc_T)
-//
+bool BMP280::calcTemperature(double &T, double &adc_T)
 {
 	//Serial.print("adc_T = "); Serial.println(adc_T,DEC);
 		
@@ -328,16 +301,17 @@ char BMP280::calcTemperature(double &T, double &adc_T)
 	Serial.println(T);
 #endif
 	
-	if(T>100 || T <-100)return 0;
+	if(T>100 || T <-100)
+		return false;
 	
-	return (1);
+	return true;
 }
 /*
 **	Pressure calculation from uncalibrated pressure value.
 **  @param : P  = stores the pressure value.
 **  @param : uP = uncalibrated pressure value. 
 */
-char BMP280::calcPressure(double &P,double uP)
+bool BMP280::calcPressure(double &P,double uP)
 {
 	//char result;
 	double var1 , var2 ;
@@ -395,18 +369,8 @@ char BMP280::calcPressure(double &P,double uP)
 		
 	P = P/100.0 ;
 	
-	if(P>1200.0 || P < 800.0)return (0);
-	return (1);
-}
+	if(P>1200.0 || P < 800.0)
+		return false;
 
-char BMP280::getError(void)
-	// If any library command fails, you can retrieve an extended
-	// error code using this command. Errors are from the wire library: 
-	// 0 = Success
-	// 1 = Data too long to fit in transmit buffer
-	// 2 = Received NACK on transmit of address
-	// 3 = Received NACK on transmit of data
-	// 4 = Other error
-{
-	return(error);
+	return true;
 }

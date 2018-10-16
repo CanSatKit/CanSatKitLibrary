@@ -5,44 +5,93 @@
 
 namespace CanSatKit {
 
+/**
+ * @brief BMP280 pressure sensor base class.
+ */
 class BMP280
 {
 	public:
-		BMP280(); // base type
+		/**
+		 * @brief Construct a new BMP280 object
+		 */
+		BMP280();
 
-		char begin();
-		char begin(int sdaPin, int sclPin);
-			// call pressure.begin() to initialize BMP280 before use
-			// returns 1 if success, 0 if failure (i2C connection problem.)
-				
-		short getOversampling();
-		char  setOversampling(short oss);
+		/**
+		 * @brief Initialize sensor and calibrate.
+		 * 
+		 * @return `true` if initialization suceeded, `false` otherwise (eg. i2C connection problem)
+		 */
+		bool begin();
 		
-		char startMeasurment();
-			// command BMP280 to start a pressure measurement
-			// oversampling: 0 - 3 for oversampling value
-			// returns (number of ms to wait) for success, 0 for fail
-		
-		char calcTemperature(double &T, double &uT);
-			// calculation the true temperature from the given uncalibrated Temperature 
-			
-		char calcPressure(double &P, double uP);
-			//calculation for measuring pressure.
+		/**
+		 * @brief Set oversampling ratio.
+		 * Should be one of the following: 0, 1, 2, 3, 4, 16.
+		 * 
+		 * \rst
+		 * +---------------+-------------+
+         * | Oversampling  | Delay (ms)  |
+         * +===============+=============+
+         * | 0             | 8           |
+         * +---------------+-------------+
+		 * | 1             | 10          |
+         * +---------------+-------------+
+		 * | 2             | 15          |
+         * +---------------+-------------+
+		 * | 3             | 24          |
+         * +---------------+-------------+
+		 * | 4             | 45          |
+         * +---------------+-------------+
+		 * | 16            | 80          |
+         * +---------------+-------------+
+		 * 
+		 * \endrst
+		 * 
+		 * Higher oversampling means longer measurement, but more accurate result
+		 * 
+		 * @param oversampling radio
+		 */
+		void setOversampling(uint8_t oversampling);
 
-		char getError();
-			// If any library command fails, you can retrieve an extended
-			// error code using this command. Errors are from the wire library: 
-			// 0 = Success
-			// 1 = Data too long to fit in transmit buffer
-			// 2 = Received NACK on transmit of address
-			// 3 = Received NACK on transmit of data
-			// 4 = Other error
-			
-		char readTemperatureAndPressure(double& T, double& P);
+		/**
+		 * @brief Get previously set oversampling.
+		 * 
+		 * @return uint8_t oversampling set
+		 */
+		uint8_t getOversampling();
 
-		char measureTemperatureAndPressure(double& T, double& P);
+		/**
+		 * @brief Perform temperature and pressure measurement.
+		 * This is blocking function (return always new value).
+		 * For non-blocking usage, see startMeasurment() and readTemperatureAndPressure()
+		 * 
+		 * @param T temperature read from the device
+		 * @param P pressure read from the device
+		 * @return bool Measurement status
+		 */
+		bool measureTemperatureAndPressure(double& T, double& P);
+
+
+		/**
+		 * @brief Begin a measurement cycle.
+		 * This function returns the delay before result will be available to read.
+		 * 
+		 * @return unsigned int delay to read 
+		 */
+		unsigned int startMeasurment();
+
+		/**
+		 * @brief Read temperature and pressure.
+		 * Use it after startMeasurment() and proper delay.
+		 * 
+		 * @param T temperature read from the device
+		 * @param P pressure read from the device
+		 * @return Measurement status
+		 */
+		bool readTemperatureAndPressure(double& T, double& P);
 
 	private:
+		char calcTemperature(double &T, double &uT);			
+		char calcPressure(double &P, double uP);
 	
 		char readCalibration();
 			// Retrieve calibration data from device:
@@ -81,7 +130,7 @@ class BMP280
 		//int dig_T2 , dig_T3 , dig_T4 , dig_P2 , dig_P3, dig_P4, dig_P5, dig_P6, dig_P7, dig_P8, dig_P9; 
 		//unsigned int dig_P1 , dig_T1 ;
 		double dig_T1, dig_T2 , dig_T3 , dig_T4 , dig_P1, dig_P2 , dig_P3, dig_P4, dig_P5, dig_P6, dig_P7, dig_P8, dig_P9; 
-		short oversampling, oversampling_t;
+		uint8_t oversampling;
 		double t_fine;
 		char error;
 };
