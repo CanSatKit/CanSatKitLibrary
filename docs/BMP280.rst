@@ -1,0 +1,6 @@
+BMP280
+===================
+
+.. doxygenclass:: CanSatKit::BMP280
+   :project: CanSatKitLibrary
+   :members:
