@@ -28,27 +28,27 @@ class BMP280
 		 * Should be one of the following: 0, 1, 2, 3, 4, 16.
 		 * 
 		 * \rst
-		 * +---------------+-------------+
-         * | Oversampling  | Delay (ms)  |
-         * +===============+=============+
-         * | 0             | 8           |
-         * +---------------+-------------+
-		 * | 1             | 10          |
-         * +---------------+-------------+
-		 * | 2             | 15          |
-         * +---------------+-------------+
-		 * | 3             | 24          |
-         * +---------------+-------------+
-		 * | 4             | 45          |
-         * +---------------+-------------+
-		 * | 16            | 80          |
-         * +---------------+-------------+
+		 * +---------------+-----------------------+
+         * | Oversampling  | Conversion time (ms)  |
+         * +===============+=======================+
+         * | 0             |        8              |
+         * +---------------+-----------------------+
+		 * | 1             |        10             |
+         * +---------------+-----------------------+
+		 * | 2             |        15             |
+         * +---------------+-----------------------+
+		 * | 3             |        24             |
+         * +---------------+-----------------------+
+		 * | 4             |        45             |
+         * +---------------+-----------------------+
+		 * | 16            |        80             |
+         * +---------------+-----------------------+
 		 * 
 		 * \endrst
 		 * 
 		 * Higher oversampling means longer measurement, but more accurate result
 		 * 
-		 * @param oversampling radio
+		 * @param oversampling ratio
 		 */
 		void setOversampling(uint8_t oversampling);
 
@@ -75,7 +75,7 @@ class BMP280
 		 * @brief Begin a measurement cycle.
 		 * This function returns the delay before result will be available to read.
 		 * 
-		 * @return unsigned int delay to read 
+		 * @return unsigned int delay to read measurement result (ms)
 		 */
 		unsigned int startMeasurment();
 
