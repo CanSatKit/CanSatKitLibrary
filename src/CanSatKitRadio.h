@@ -114,25 +114,25 @@ class Radio {
   
   /**
    * @brief Put frame into the transmit buffer.
-   * @return `true` if frame put into buffer. `false` if not enught space in the buffer.
+   * @return `true` if frame put into buffer. `false` if not enough space in the buffer.
    */
   static bool transmit(Frame frame);
 
   /**
    * @brief Put String str into the transmit buffer.
-   * @return `true` if frame put into buffer. `false` if not enught space in the buffer.
+   * @return `true` if frame put into buffer. `false` if not enough space in the buffer.
    */
   static bool transmit(String str);
 
   /**
    * @brief Put string str into the transmit buffer.
-   * @return `true` if frame put into buffer. `false` if not enught space in the buffer.
+   * @return `true` if frame put into buffer. `false` if not enough space in the buffer.
    */
   static bool transmit(const char* str);
 
   /**
    * @brief Put binary data into the transmit buffer (byte table of length length).
-   * @return `true` if frame put into buffer. `false` if not enught space in the buffer.
+   * @return `true` if frame put into buffer. `false` if not enough space in the buffer.
    */
   static bool transmit(const std::uint8_t* data, std::uint8_t length);
 
