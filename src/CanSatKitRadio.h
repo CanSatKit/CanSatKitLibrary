@@ -141,6 +141,13 @@ class Radio {
    */
   static void flush();
   
+  /**
+   * @brief Checks if transmit fifo is empty, which means that radio module is sending last frame or is idle.
+   *
+   * @return `true` if transmit fifo is empty
+   */
+  static bool tx_fifo_empty();
+
 
   /**
    * @brief Get number of frames in receive buffer
