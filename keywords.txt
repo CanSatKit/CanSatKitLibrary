@@ -31,6 +31,7 @@ available                       KEYWORD2
 receive                         KEYWORD2
 get_rssi_last                   KEYWORD2
 get_rssi_now                    KEYWORD2
+tx_fifo_empty                   KEYWORD2
 
 #######################################
 # Constants (LITERAL1)

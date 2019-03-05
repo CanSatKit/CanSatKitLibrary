@@ -520,6 +520,10 @@ void Radio::flush() {
   while (mode != Mode::Receive);
 }
 
+bool Radio::tx_fifo_empty() {
+  return fifo_tx.size() == 0;
+}
+
 
 // RX mode
 
