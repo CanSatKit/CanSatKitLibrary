@@ -354,7 +354,7 @@ bool Radio::begin() {
   
   clearIRQFlags();
   
-  SPI.usingInterrupt(digitalPinToInterrupt(2));
+  SPI.usingInterrupt(digitalPinToInterrupt(pin_dio0));
   attachInterrupt(digitalPinToInterrupt(pin_dio0), radio_interrupt, HIGH);
   
   set_mode(Mode::Receive);
