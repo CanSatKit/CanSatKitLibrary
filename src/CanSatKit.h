@@ -16,6 +16,8 @@ namespace SD {
 constexpr int ChipSelect = 11;
 };  // namespace SD
 
+constexpr int LED = 13;
+
 };  // namespace Pins
 };  // namespace CanSatKit
 
