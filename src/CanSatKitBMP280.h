@@ -19,7 +19,7 @@ class BMP280
 		/**
 		 * @brief Initialize sensor and calibrate.
 		 * 
-		 * @return `true` if initialization suceeded, `false` otherwise (eg. i2C connection problem)
+		 * @return `true` if initialization succeeded, `false` otherwise (eg. i2C connection problem)
 		 */
 		bool begin();
 		
