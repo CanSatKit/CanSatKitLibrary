@@ -159,7 +159,7 @@ CANSAT_TEST(3_fill_buffer) {
   for (int i = 0; i < 11; ++i) {
     assertTrue(radio.transmit(buffer, 255));
   }
-  // not enought space for last one
+  // not enough space for last one
   assertFalse(radio.transmit(buffer, 255));
 }
 
