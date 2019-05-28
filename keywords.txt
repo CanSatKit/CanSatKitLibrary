@@ -5,60 +5,60 @@
 #######################################
 # Datatypes (KEYWORD1)
 #######################################
-BMP280    				KEYWORD1
-Frame                   KEYWORD1
-Radio
-Bandwidth
-SpreadingFactor
-CodingRate
+BMP280	KEYWORD1
+Frame	KEYWORD1
+Radio	KEYWORD1
+Bandwidth	KEYWORD1
+SpreadingFactor	KEYWORD1
+CodingRate	KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
 #######################################
 
-getOversampling			        KEYWORD2
-setOversampling			        KEYWORD2
-startMeasurment				    KEYWORD2
-calcTemperature			        KEYWORD2
-calcPressure				    KEYWORD2
-readTemperatureAndPressure      KEYWORD2
-measureTemperatureAndPressure   KEYWORD2
+getOversampling	KEYWORD2
+setOversampling	KEYWORD2
+startMeasurment	KEYWORD2
+calcTemperature	KEYWORD2
+calcPressure	KEYWORD2
+readTemperatureAndPressure	KEYWORD2
+measureTemperatureAndPressure	KEYWORD2
 
-disable_debug                   KEYWORD2
-transmit                        KEYWORD2
-flush                           KEYWORD2
-available                       KEYWORD2
-receive                         KEYWORD2
-get_rssi_last                   KEYWORD2
-get_rssi_now                    KEYWORD2
-tx_fifo_empty                   KEYWORD2
+disable_debug	KEYWORD2
+transmit	KEYWORD2
+flush	KEYWORD2
+available	KEYWORD2
+receive	KEYWORD2
+get_rssi_last	KEYWORD2
+get_rssi_now	KEYWORD2
+tx_fifo_empty	KEYWORD2
 
 #######################################
 # Constants (LITERAL1)
 #######################################
 
-ChipSelect              LITERAL1
-DIO0                    LITERAL1
+ChipSelect	LITERAL1
+DIO0	LITERAL1
 
-Bandwidth_7800_Hz       LITERAL1
-Bandwidth_10400_Hz      LITERAL1
-Bandwidth_15600_Hz      LITERAL1
-Bandwidth_20800_Hz      LITERAL1
-Bandwidth_31250_Hz      LITERAL1
-Bandwidth_41700_Hz      LITERAL1
-Bandwidth_62500_Hz      LITERAL1
-Bandwidth_125000_Hz     LITERAL1
-Bandwidth_250000_Hz     LITERAL1
-Bandwidth_500000_Hz     LITERAL1
+Bandwidth_7800_Hz	LITERAL1
+Bandwidth_10400_Hz	LITERAL1
+Bandwidth_15600_Hz	LITERAL1
+Bandwidth_20800_Hz	LITERAL1
+Bandwidth_31250_Hz	LITERAL1
+Bandwidth_41700_Hz	LITERAL1
+Bandwidth_62500_Hz	LITERAL1
+Bandwidth_125000_Hz	LITERAL1
+Bandwidth_250000_Hz	LITERAL1
+Bandwidth_500000_Hz	LITERAL1
 
-SpreadingFactor_7       LITERAL1
-SpreadingFactor_8       LITERAL1
-SpreadingFactor_9       LITERAL1
-SpreadingFactor_10      LITERAL1
-SpreadingFactor_11      LITERAL1
-SpreadingFactor_12      LITERAL1
+SpreadingFactor_7	LITERAL1
+SpreadingFactor_8	LITERAL1
+SpreadingFactor_9	LITERAL1
+SpreadingFactor_10	LITERAL1
+SpreadingFactor_11	LITERAL1
+SpreadingFactor_12	LITERAL1
 
-CodingRate_4_5          LITERAL1
-CodingRate_4_6          LITERAL1
-CodingRate_4_7          LITERAL1
-CodingRate_4_8          LITERAL1
+CodingRate_4_5	LITERAL1
+CodingRate_4_6	LITERAL1
+CodingRate_4_7	LITERAL1
+CodingRate_4_8	LITERAL1
