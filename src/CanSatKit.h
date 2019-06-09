@@ -17,6 +17,18 @@ constexpr int ChipSelect = 11;
 };  // namespace SD
 
 constexpr int LED = 13;
+  
+  
+namespace EM1 {
+namespace Radio {
+constexpr int ChipSelect = 9;
+constexpr int DIO0 = 10;
+};  // namespace Radio
+
+namespace SD {
+constexpr int ChipSelect = 8;
+};  // namespace SD
+};  // namespace EM1
 
 };  // namespace Pins
 };  // namespace CanSatKit
