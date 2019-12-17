@@ -1,6 +1,7 @@
 #ifndef CANSATKITLIBRARY_RadioH_
 #define CANSATKITLIBRARY_RadioH_
 
+#include "Arduino.h"
 #include <cstdint>
 
 namespace CanSatKit {

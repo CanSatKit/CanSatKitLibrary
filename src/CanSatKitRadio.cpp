@@ -1,4 +1,3 @@
-#include <Arduino.h>
 #include <math.h>
 #include <SPI.h>
 #include <string.h>
